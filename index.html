@@ -30,7 +30,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 .pill .n{font-size:22px;font-weight:600;line-height:1;}
 .pill .l{font-size:10px;color:var(--text2);}
 .n-ok{color:var(--green)}.n-warn{color:var(--amber)}.n-danger{color:var(--red)}
-.cars{padding:4px 16px 100px;display:flex;flex-direction:column;gap:10px;}
+.cars{padding:4px 16px 120px;display:flex;flex-direction:column;gap:10px;}
 .card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;}
 .card-hd{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:background 0.1s;}
 .card-hd:hover{background:var(--bg3);}
@@ -94,9 +94,138 @@ select.inp{cursor:pointer;}
 .pb img{width:46px;height:46px;object-fit:cover;flex-shrink:0;display:block;}
 .pb-ph{display:flex;align-items:center;gap:8px;color:var(--text2);padding:0 14px;font-size:13px;width:100%;}
 .pbr{font-size:12px;color:var(--red);background:none;border:none;cursor:pointer;padding:3px 0;font-family:inherit;}
+
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(15,15,15,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:0.5px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);}
+body.light .tabbar{background:rgba(245,245,240,0.96);}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0 12px;cursor:pointer;gap:4px;border:none;background:none;transition:opacity 0.15s;}
+.tab-ic{font-size:22px;line-height:1;}
+.tab-lbl{font-size:10px;font-weight:500;letter-spacing:0.02em;color:var(--text3);transition:color 0.15s;}
+.tab.active .tab-lbl{color:var(--green);}
+.tab-indicator{width:4px;height:4px;border-radius:50%;background:var(--green);margin-top:2px;opacity:0;transition:opacity 0.15s;}
+.tab.active .tab-indicator{opacity:1;}
+#page-docauto{display:block;}
+#page-planner{display:none;}
+
+.confirm-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:24px;animation:fi 0.15s ease;}
+.confirm-box{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);padding:24px;width:100%;max-width:320px;text-align:center;}
+.confirm-box h3{font-size:16px;font-weight:600;margin-bottom:8px;}
+.confirm-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;}
+.confirm-btns{display:flex;gap:10px;}
+.confirm-btns button{flex:1;padding:12px;border:none;border-radius:var(--rsm);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;}
+.confirm-cancel{background:var(--bg3);color:var(--text);}
+.confirm-ok{background:var(--red);color:#fff;}
+
+/* ── CAR PLANNER ── */
+:root{--pl-bg:#f2f2f7;--pl-card:#fff;--pl-blue:#007aff;--pl-blue2:#e8f0fe;--pl-text:#1c1c1e;--pl-text2:#6e6e73;--pl-border:#e5e5ea;--pl-green:#34c759;--pl-orange:#ff9500;--pl-red:#ff3b30;}
+body.light{--pl-bg:#f2f2f7;--pl-card:#fff;--pl-text:#1c1c1e;--pl-text2:#6e6e73;--pl-border:#e5e5ea;}
+/* Dark mode for planner */
+body:not(.light) #page-planner{--pl-bg:#1c1c1e;--pl-card:#2c2c2e;--pl-text:#fff;--pl-text2:#aeaeb2;--pl-border:#38383a;}
+.pl-topbar{background:var(--pl-card);border-bottom:0.5px solid var(--pl-border);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.pl-topbar h1{font-size:22px;font-weight:700;color:var(--pl-text);}
+.pl-topbar p{font-size:12px;color:var(--pl-text2);}
+.pl-fab{width:38px;height:38px;border-radius:50%;background:var(--pl-blue);color:#fff;border:none;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.pl-list{padding:16px;}
+.pl-car-row{background:var(--pl-card);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;border:0.5px solid var(--pl-border);}
+.pl-car-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.pl-car-info{flex:1;}
+.pl-car-name{font-size:15px;font-weight:600;color:var(--pl-text);}
+.pl-car-sub{font-size:12px;color:var(--pl-text2);margin-top:2px;}
+.pl-chev{color:var(--pl-text2);font-size:14px;}
+/* Sheet */
+.pl-overlay{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.5);display:flex;align-items:flex-end;}
+.pl-sheet{width:100%;background:var(--pl-card);border-radius:16px 16px 0 0;max-height:90%;overflow-y:auto;animation:su 0.25s cubic-bezier(0.32,0.72,0,1);}
+.pl-sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px;}
+.pl-sheet-title{font-size:17px;font-weight:600;color:var(--pl-text);}
+.pl-sheet-save{font-size:15px;font-weight:600;color:var(--pl-blue);background:none;border:none;cursor:pointer;}
+.pl-sheet-x{font-size:20px;color:var(--pl-text2);background:none;border:none;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.pl-form{padding:0 20px 24px;display:flex;flex-direction:column;gap:16px;}
+.pl-field{display:flex;flex-direction:column;gap:5px;}
+.pl-field label{font-size:11px;font-weight:600;color:var(--pl-text2);letter-spacing:0.05em;text-transform:uppercase;}
+.pl-inp{background:var(--pl-bg);border:0.5px solid var(--pl-border);border-radius:10px;padding:12px 14px;color:var(--pl-text);font-size:15px;width:100%;font-family:inherit;}
+.pl-inp:focus{outline:none;border-color:var(--pl-blue);}
+.pl-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pl-colors{display:flex;flex-wrap:wrap;gap:10px;}
+.pl-color-dot{width:34px;height:34px;border-radius:50%;cursor:pointer;border:3px solid transparent;display:flex;align-items:center;justify-content:center;transition:transform 0.15s;}
+.pl-color-dot.sel{border-color:#000;transform:scale(1.1);}
+body:not(.light) .pl-color-dot.sel{border-color:#fff;}
+/* Car detail */
+.pl-detail{padding:0;}
+.pl-detail-top{background:var(--pl-card);padding:14px 20px 16px;border-bottom:0.5px solid var(--pl-border);}
+.pl-back{font-size:22px;color:var(--pl-blue);background:none;border:none;cursor:pointer;}
+.pl-detail-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.pl-detail-name{font-size:18px;font-weight:700;color:var(--pl-text);}
+.pl-stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:0;}
+.pl-stat{padding:8px 0;border-right:0.5px solid var(--pl-border);}
+.pl-stat:last-child{border-right:none;}
+.pl-stat-n{font-size:20px;font-weight:700;color:var(--pl-text);}
+.pl-stat-n.green{color:var(--pl-green);}
+.pl-stat-n.blue{color:var(--pl-blue);}
+.pl-stat-l{font-size:11px;color:var(--pl-text2);}
+.pl-tabs{display:flex;margin:12px 16px 0;background:var(--pl-bg);border-radius:10px;padding:3px;}
+.pl-tab{flex:1;padding:7px;border-radius:8px;border:none;background:none;font-size:14px;font-weight:500;color:var(--pl-text2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.pl-tab.active{background:var(--pl-blue);color:#fff;}
+/* Tasks */
+.pl-search{margin:12px 16px;position:relative;}
+.pl-search input{width:100%;background:var(--pl-card);border:0.5px solid var(--pl-border);border-radius:10px;padding:10px 14px 10px 36px;color:var(--pl-text);font-size:14px;font-family:inherit;}
+.pl-search input:focus{outline:none;border-color:var(--pl-blue);}
+.pl-search-ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--pl-text2);font-size:14px;}
+.pl-filters{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;}
+.pl-filter{padding:6px 14px;border-radius:20px;border:1px solid var(--pl-border);background:var(--pl-card);color:var(--pl-text2);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;}
+.pl-filter.active{background:var(--pl-blue);color:#fff;border-color:var(--pl-blue);}
+.pl-empty{text-align:center;padding:48px 24px;color:var(--pl-text2);}
+.pl-empty-ic{font-size:48px;margin-bottom:12px;}
+.pl-empty p{font-size:14px;}
+/* Categories */
+.pl-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px;}
+.pl-cat-card{background:var(--pl-card);border-radius:12px;padding:14px;cursor:pointer;border:0.5px solid var(--pl-border);}
+.pl-cat-ic{width:36px;height:36px;border-radius:10px;background:var(--pl-blue2);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;}
+.pl-cat-n{font-size:14px;font-weight:600;color:var(--pl-text);margin-bottom:2px;}
+.pl-cat-sub{font-size:11px;color:var(--pl-text2);}
+.pl-cat-prog{height:3px;background:var(--pl-border);border-radius:2px;margin-top:8px;}
+.pl-cat-prog-bar{height:100%;background:var(--pl-blue);border-radius:2px;transition:width 0.3s;}
+.pl-cat-count{font-size:18px;font-weight:700;color:var(--pl-blue);float:right;margin-top:-24px;}
+/* Subcategory detail */
+.pl-subcat-list{padding:0 16px;}
+.pl-subcat-hd{font-size:11px;font-weight:600;color:var(--pl-text2);letter-spacing:0.05em;text-transform:uppercase;padding:16px 0 8px;display:flex;align-items:center;justify-content:space-between;}
+.pl-subcat-add{font-size:13px;font-weight:600;color:var(--pl-blue);background:none;border:none;cursor:pointer;}
+.pl-sub-row{background:var(--pl-card);border-radius:10px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;border:0.5px solid var(--pl-border);}
+.pl-sub-row.active-sel{background:var(--pl-blue2);border-color:var(--pl-blue);}
+.pl-sub-ic{width:32px;height:32px;border-radius:8px;background:var(--pl-blue);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pl-sub-row.active-sel .pl-sub-ic{background:var(--pl-blue);}
+.pl-sub-name{flex:1;font-size:14px;font-weight:500;color:var(--pl-text);}
+.pl-sub-row.active-sel .pl-sub-name{color:var(--pl-blue);font-weight:600;}
+.pl-sub-count{font-size:13px;color:var(--pl-text2);}
+.pl-sub-plus{width:28px;height:28px;border-radius:8px;background:var(--pl-blue);color:#fff;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+/* Task row */
+.pl-task-row{background:var(--pl-card);border-radius:10px;padding:13px 14px;margin:0 16px 8px;display:flex;align-items:flex-start;gap:12px;border:0.5px solid var(--pl-border);}
+.pl-task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--pl-border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.pl-task-check.done{background:var(--pl-green);border-color:var(--pl-green);color:#fff;}
+.pl-task-info{flex:1;}
+.pl-task-name{font-size:14px;font-weight:500;color:var(--pl-text);}
+.pl-task-name.done{text-decoration:line-through;color:var(--pl-text2);}
+.pl-task-meta{font-size:11px;color:var(--pl-text2);margin-top:3px;}
+.pl-task-status{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;}
+.pl-task-status.waiting{background:#fff3cd;color:#856404;}
+.pl-task-status.inprogress{background:#cce5ff;color:#004085;}
+.pl-task-status.done-s{background:#d4edda;color:#155724;}
+/* Icon picker */
+.pl-icon-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0 20px 20px;}
+.pl-ic-btn{width:44px;height:44px;border-radius:10px;border:1.5px solid var(--pl-border);background:var(--pl-bg);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pl-ic-btn.sel{background:var(--pl-blue);border-color:var(--pl-blue);}
+.pl-preview-row{background:var(--pl-blue2);border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;margin:0 20px 16px;}
+.pl-preview-ic{width:40px;height:40px;border-radius:10px;background:var(--pl-blue);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.pl-preview-name{font-size:15px;font-weight:500;color:var(--pl-blue);}
+/* Add task form extras */
+.pl-task-status-sel{display:flex;gap:8px;}
+.pl-status-btn{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--pl-border);background:var(--pl-bg);font-size:13px;font-weight:500;color:var(--pl-text2);cursor:pointer;}
+.pl-status-btn.sel{border-color:var(--pl-blue);color:var(--pl-blue);background:var(--pl-blue2);}
+.pl-del-btn{width:32px;height:32px;border-radius:8px;background:#fff0f0;border:none;color:var(--pl-red);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+body:not(.light) .pl-del-btn{background:rgba(255,59,48,0.15);}
+
 </style>
 </head>
 <body>
+<div id="page-docauto">
 <div class="topbar">
   <div><h1>DocAuto</h1><p>ITP &middot; RCA &middot; Rovinieta &middot; Revizie</p></div>
   <div class="topbar-r">
@@ -106,6 +235,12 @@ select.inp{cursor:pointer;}
 </div>
 <div class="summary" id="sum"></div>
 <div class="cars" id="cars"></div>
+</div>
+
+<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;background:var(--pl-bg);"><div style="max-width:480px;margin:0 auto;min-height:100%;position:relative;">
+<div id="pl-root"></div>
+</div></div>
+
 <div id="ov" style="display:none;"></div>
 <input type="file" id="fi" accept="image/*,application/pdf" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;" onchange="onFile(this)">
 
@@ -116,20 +251,7 @@ var DL={itp:'ITP',rca:'RCA',rovinieta:'Rovinieta',revizie:'Revizie'};
 
 function load(){
   try{cars=JSON.parse(localStorage.getItem(SK))||[];}catch(e){cars=[];}
-  if(!cars.length) cars=[
-    {id:1,name:'BMW E36',plate:'B 733 ETY',photo:'',docs:{
-      itp:{sd:'2024-08-15',mo:12,ex:'2025-08-15'},
-      rca:{sd:'2024-07-01',mo:12,ex:'2025-07-01'},
-      rovinieta:{sd:'2025-01-01',mo:3,ex:'2025-04-01'},
-      revizie:{lk:'110000',ck:'115000',iv:'10000'},
-      files:{rca:'',carte:'',talon:''}}},
-    {id:2,name:'Dacia Logan',plate:'IF 01 XYZ',photo:'',docs:{
-      itp:{sd:'2025-11-20',mo:12,ex:'2026-11-20'},
-      rca:{sd:'2025-06-15',mo:12,ex:'2026-06-15'},
-      rovinieta:{sd:'2025-12-01',mo:12,ex:'2026-12-01'},
-      revizie:{lk:'85000',ck:'89500',iv:'10000'},
-      files:{rca:'',carte:'',talon:''}}}
-  ];
+  // start empty
 }
 function save(){try{localStorage.setItem(SK,JSON.stringify(cars));}catch(e){}}
 
@@ -219,7 +341,27 @@ function renderCars(){
 }
 
 function render(){renderSum();renderCars();}
-function delCar(id){if(!confirm('Stergi aceasta masina?'))return;cars=cars.filter(function(c){return c.id!==id;});delete exp[id];save();render();}
+function delCar(id){
+  var car=cars.find(function(c){return c.id===id;});
+  if(!car)return;
+  showConfirm(
+    'Sterge masina',
+    'Stergi \''+car.name+'\' si toate documentele ei?',
+    function(){
+      cars=cars.filter(function(c){return c.id!==id;});
+      delete exp[id];save();render();
+    }
+  );
+}
+function showConfirm(title, msg, onOk){
+  var el=document.createElement('div');
+  el.className='confirm-overlay';
+  el.innerHTML='<div class="confirm-box"><h3>'+title+'</h3><p>'+msg+'</p><div class="confirm-btns"><button class="confirm-cancel" id="cCancel">Anuleaza</button><button class="confirm-ok" id="cOk">Sterge</button></div></div>';
+  document.body.appendChild(el);
+  el.querySelector('#cCancel').onclick=function(){el.remove();};
+  el.querySelector('#cOk').onclick=function(){el.remove();onOk();};
+  el.onclick=function(e){if(e.target===el)el.remove();};
+}
 
 /* SHEET */
 function openSheet(html){
@@ -522,7 +664,688 @@ function toggleTheme(){
 (function(){try{if(localStorage.getItem('dt')==='l'){document.body.classList.add('light');document.getElementById('themeBtn').innerHTML='&#9679;';}}catch(e){}})();
 
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+function switchTab(tab){
+  document.getElementById('page-docauto').style.display = tab==='docauto'?'block':'none';
+  document.getElementById('page-planner').style.display = tab==='planner'?'flex':'none';
+  document.getElementById('tab-docauto').classList.toggle('active', tab==='docauto');
+  document.getElementById('tab-planner').classList.toggle('active', tab==='planner');
+}
+
+
+/* ══════════════════════════════════════════
+   CAR PLANNER ENGINE
+══════════════════════════════════════════ */
+var PL = {
+  SK: 'carplanner_v1',
+  data: { cars: [] },
+  view: 'home',          // home | car | category | subcategory
+  carId: null,
+  catId: null,
+  subId: null,
+  taskFilter: 'all',     // all | waiting | inprogress | done
+  taskSearch: '',
+  taskTab: 'tasks',      // tasks | categories
+};
+
+var PL_COLORS = ['#007aff','#ff3b30','#34c759','#ff9500','#af52de','#ff2d55','#ff6b35','#8e8e93'];
+
+var PL_ICONS = ['⚙️','🔧','❓','⚡','🔌','📈','🛡️','⭐','📦','🗂️','📋','📈','⬆️','🏠','☀️','💧','🌀','🌡️','🧭','🎛️','🔄','📱','🔲','🏆','🔃'];
+
+var PL_DEFAULT_CATS = [
+  {id:'mecanica',name:'Mecanică',icon:'⚙️',subs:[
+    {id:'s1',name:'Punte Față',icon:'🔄'},{id:'s2',name:'Punte Spate',icon:'🔄'},
+    {id:'s3',name:'Sistem Frânare',icon:'⏱️'},{id:'s4',name:'Motor',icon:'⚡'},
+    {id:'s5',name:'Transmisie',icon:'🎛️'},{id:'s6',name:'Aer Condiționat',icon:'🌀'},
+    {id:'s7',name:'Sistem Răcire',icon:'🌡️'},{id:'s8',name:'Direcție',icon:'🧭'},
+    {id:'s9',name:'Amortizoare',icon:'📈'},{id:'s10',name:'Electrica',icon:'🔌'}
+  ]},
+  {id:'caroserie',name:'Caroserie',icon:'📦',subs:[
+    {id:'c1',name:'Vopsea',icon:'💧'},{id:'c2',name:'Rugină',icon:'⚠️'},
+    {id:'c3',name:'Geamuri',icon:'🔲'},{id:'c4',name:'Uși',icon:'🚪'},
+    {id:'c5',name:'Aripi',icon:'🛡️'},{id:'c6',name:'Capotă',icon:'📋'},
+    {id:'c7',name:'Portbagaj',icon:'📦'},{id:'c8',name:'Bară Față',icon:'⬆️'},
+    {id:'c9',name:'Bară Spate',icon:'📈'}
+  ]},
+  {id:'tuning',name:'Tuning',icon:'⚡',subs:[
+    {id:'t1',name:'Motor Tuning',icon:'⚡'},{id:'t2',name:'ECU Remap',icon:'🔌'},
+    {id:'t3',name:'Escape',icon:'🌀'},{id:'t4',name:'Admisie',icon:'⬇️'},
+    {id:'t5',name:'Suspensie Sport',icon:'📈'},{id:'t6',name:'Frâne Sport',icon:'⏱️'},
+    {id:'t7',name:'Diferențial',icon:'🔄'}
+  ]},
+  {id:'upgrade',name:'Upgrade-uri',icon:'⬆️',subs:[
+    {id:'u1',name:'Jante',icon:'⭕'},{id:'u2',name:'Anvelope',icon:'⭕'},
+    {id:'u3',name:'Sistem Audio',icon:'🔊'},{id:'u4',name:'Lumini LED',icon:'☀️'},
+    {id:'u5',name:'Interior',icon:'🏠'},{id:'u6',name:'Siguranță',icon:'🛡️'},
+    {id:'u7',name:'Tehnologie',icon:'📱'}
+  ]},
+  {id:'estetica',name:'Estetică',icon:'⭐',subs:[
+    {id:'e1',name:'Detailing',icon:'💧'},{id:'e2',name:'Foliere',icon:'📋'},
+    {id:'e3',name:'Polisare',icon:'🔄'},{id:'e4',name:'Curățare',icon:'🗑️'},
+    {id:'e5',name:'Interior',icon:'🏠'},{id:'e6',name:'Embleme & Decor',icon:'🏆'}
+  ]}
+];
+
+function plLoad(){
+  try{ PL.data=JSON.parse(localStorage.getItem(PL.SK))||{cars:[]}; }catch(e){ PL.data={cars:[]}; }
+  if(!PL.data.cars) PL.data.cars=[];
+}
+function plSave(){ try{ localStorage.setItem(PL.SK,JSON.stringify(PL.data)); }catch(e){} }
+function plId(){ return Date.now()+Math.random().toString(36).slice(2); }
+
+function plGetCar(){ return PL.data.cars.find(function(c){return c.id===PL.carId;}); }
+function plGetCat(car){ return (car&&car.categories||[]).find(function(c){return c.id===PL.catId;}); }
+function plGetSub(cat){ return (cat&&cat.subs||[]).find(function(s){return s.id===PL.subId;}); }
+
+function plTasksForSub(sub){
+  if(!sub) return [];
+  return sub.tasks||[];
+}
+function plTasksForCat(cat){
+  if(!cat) return [];
+  var all=[];
+  (cat.subs||[]).forEach(function(s){ all=all.concat(s.tasks||[]); });
+  return all;
+}
+
+function plRender(){
+  var root=document.getElementById('pl-root');
+  if(!root) return;
+  root.innerHTML='';
+  if(PL.view==='home') plRenderHome(root);
+  else if(PL.view==='car') plRenderCar(root);
+  else if(PL.view==='category') plRenderCategory(root);
+}
+
+/* ── HOME ── */
+function plRenderHome(root){
+  var n=PL.data.cars.length;
+  var hd=document.createElement('div');hd.className='pl-topbar';
+  hd.innerHTML='<div><h1>CAR PLANNER</h1><p>'+n+' '+(n===1?'mașină':'mașini')+'</p></div>';
+  var fab=document.createElement('button');fab.className='pl-fab';fab.innerHTML='+';
+  fab.onclick=function(){plOpenAddCar();};
+  hd.appendChild(fab);root.appendChild(hd);
+
+  var list=document.createElement('div');list.className='pl-list';
+  if(!n){
+    list.innerHTML='<div class="pl-empty"><div class="pl-empty-ic">🚗</div><p>Nicio mașină adăugată.<br>Apasă + pentru a adăuga.</p></div>';
+  } else {
+    PL.data.cars.forEach(function(car){
+      var cats=car.categories||[];
+      var taskCount=0;
+      cats.forEach(function(cat){ cat.subs&&cat.subs.forEach(function(s){ taskCount+=(s.tasks||[]).length; }); });
+      var row=document.createElement('div');row.className='pl-car-row';
+      row.innerHTML='<div class="pl-car-dot" style="background:'+car.color+'"></div>'+
+        '<div class="pl-car-info"><div class="pl-car-name">'+(car.name||'Mașină')+'</div>'+
+        '<div class="pl-car-sub">'+taskCount+' task'+(taskCount!==1?'s':'')+'</div></div>'+
+        '<span class="pl-chev">&#8250;</span>';
+      row.onclick=function(){PL.carId=car.id;PL.view='car';PL.taskTab='tasks';plRender();};
+      list.appendChild(row);
+    });
+  }
+  root.appendChild(list);
+}
+
+/* ── ADD CAR SHEET ── */
+var _plEditCarId=null;
+function plOpenAddCar(editId){
+  _plEditCarId=editId||null;
+  var car=editId?PL.data.cars.find(function(c){return c.id===editId;}):null;
+  var selColor=car?car.color:PL_COLORS[0];
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  // Header
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent=editId?'Editează mașina':'Mașină nouă';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  save.onclick=function(){plSaveCar(selColor);ov.remove();};
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);
+  sheet.appendChild(hd);
+  // Form
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>Denumire *</label><input class="pl-inp" id="pl-cn" placeholder="Ex: BMW, Audi, Toyota..." value="'+(car?car.name:'')+'"></div>'+
+    '<div class="pl-row2"><div class="pl-field"><label>Marcă</label><input class="pl-inp" id="pl-cm" placeholder="" value="'+(car?car.brand||'':'')+'"></div>'+
+    '<div class="pl-field"><label>Model</label><input class="pl-inp" id="pl-cmo" placeholder="" value="'+(car?car.model||'':'')+'"></div></div>'+
+    '<div class="pl-field"><label>An</label><input class="pl-inp" id="pl-cy" type="number" placeholder="" value="'+(car?car.year||'':'')+'"></div>'+
+    '<div class="pl-field"><label>Culoare</label><div class="pl-colors" id="pl-colors"></div></div>';
+  sheet.appendChild(form);
+  // Color picker
+  setTimeout(function(){
+    var colorEl=document.getElementById('pl-colors');
+    if(!colorEl) return;
+    PL_COLORS.forEach(function(col){
+      var dot=document.createElement('div');dot.className='pl-color-dot'+(col===selColor?' sel':'');
+      dot.style.background=col;
+      if(col===selColor) dot.innerHTML='<span style="color:#fff;font-size:14px">&#10003;</span>';
+      dot.onclick=function(){
+        selColor=col;
+        document.querySelectorAll('.pl-color-dot').forEach(function(d){d.classList.remove('sel');d.innerHTML='';});
+        dot.classList.add('sel');dot.innerHTML='<span style="color:#fff;font-size:14px">&#10003;</span>';
+      };
+      colorEl.appendChild(dot);
+    });
+  },10);
+  ov.appendChild(sheet);
+  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+function plSaveCar(color){
+  var name=(document.getElementById('pl-cn').value||'').trim();
+  if(!name){alert('Introdu denumirea mașinii');return;}
+  if(_plEditCarId){
+    var car=PL.data.cars.find(function(c){return c.id===_plEditCarId;});
+    if(car){car.name=name;car.brand=document.getElementById('pl-cm').value||'';car.model=document.getElementById('pl-cmo').value||'';car.year=document.getElementById('pl-cy').value||'';car.color=color;}
+  } else {
+    var newCar={id:plId(),name:name,brand:document.getElementById('pl-cm').value||'',model:document.getElementById('pl-cmo').value||'',year:document.getElementById('pl-cy').value||'',color:color,categories:JSON.parse(JSON.stringify(PL_DEFAULT_CATS))};
+    newCar.categories.forEach(function(cat){cat.id=plId();cat.subs.forEach(function(s){s.id=plId();s.tasks=[];});});
+    PL.data.cars.push(newCar);
+  }
+  plSave();plRender();
+}
+
+/* ── CAR DETAIL ── */
+function plRenderCar(root){
+  var car=plGetCar();if(!car)return;
+  var cats=car.categories||[];
+  var allTasks=[];cats.forEach(function(cat){cat.subs&&cat.subs.forEach(function(s){allTasks=allTasks.concat(s.tasks||[]);});});
+  var done=allTasks.filter(function(t){return t.status==='done';}).length;
+
+  // Top
+  var top=document.createElement('div');top.className='pl-detail-top pl-topbar';
+  var back=document.createElement('button');back.className='pl-back';back.innerHTML='&#8249;';back.onclick=function(){PL.view='home';plRender();};
+  var nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:8px;';
+  nameRow.innerHTML='<div class="pl-car-dot" style="background:'+car.color+'"></div><div class="pl-detail-name">'+car.name+'</div>';
+  var del2=document.createElement('button');del2.className='pl-del-btn';del2.innerHTML='🗑️';
+  del2.onclick=function(){
+    showConfirm('Sterge masina','Stergi '+car.name+' si toate taskurile?',function(){
+      PL.data.cars=PL.data.cars.filter(function(c){return c.id!==car.id;});
+      plSave();PL.view='home';plRender();
+    });
+  };
+  top.appendChild(back);top.appendChild(nameRow);top.appendChild(del2);
+  root.appendChild(top);
+
+  // Stats
+  var stats=document.createElement('div');stats.className='pl-stats';stats.style.cssText='background:var(--pl-card);border-bottom:0.5px solid var(--pl-border);';
+  stats.innerHTML='<div class="pl-stat"><div class="pl-stat-n">'+allTasks.length+'</div><div class="pl-stat-l">Total Tasks</div></div>'+
+    '<div class="pl-stat"><div class="pl-stat-n green">'+done+'</div><div class="pl-stat-l">Finalizate</div></div>'+
+    '<div class="pl-stat"><div class="pl-stat-n blue">'+cats.length+'</div><div class="pl-stat-l">Categorii</div></div>';
+  root.appendChild(stats);
+
+  // Tabs
+  var tabs=document.createElement('div');tabs.className='pl-tabs';
+  var t1=document.createElement('button');t1.className='pl-tab'+(PL.taskTab==='tasks'?' active':'');t1.innerHTML='&#9776; Tasks';
+  var t2=document.createElement('button');t2.className='pl-tab'+(PL.taskTab==='categories'?' active':'');t2.innerHTML='&#8862; Categorii';
+  t1.onclick=function(){PL.taskTab='tasks';plRender();};
+  t2.onclick=function(){PL.taskTab='categories';plRender();};
+  tabs.appendChild(t1);tabs.appendChild(t2);root.appendChild(tabs);
+
+  if(PL.taskTab==='tasks') plRenderTasksTab(root,car,allTasks);
+  else plRenderCategoriesTab(root,car,cats);
+
+  // FAB
+  var fab=document.createElement('button');
+  fab.style.cssText='position:fixed;bottom:72px;right:calc(max(16px, 50% - 224px));width:52px;height:52px;border-radius:50%;background:var(--pl-blue);color:#fff;border:none;font-size:26px;cursor:pointer;z-index:20;box-shadow:0 4px 12px rgba(0,122,255,0.4);display:flex;align-items:center;justify-content:center;';
+  fab.innerHTML='+';
+  if(PL.taskTab==='tasks') fab.onclick=function(){plOpenAddTask(car,null,null);};
+  else fab.onclick=function(){plOpenAddCategory(car);};
+  root.appendChild(fab);
+}
+
+function plRenderTasksTab(root,car,allTasks){
+  // Search
+  var srch=document.createElement('div');srch.className='pl-search';
+  srch.innerHTML='<span class="pl-search-ic">&#128269;</span><input placeholder="Caută tasks..." value="'+PL.taskSearch+'" id="pl-srch">';
+  srch.querySelector('input').oninput=function(){PL.taskSearch=this.value;plRender();};
+  root.appendChild(srch);
+  // Filters
+  var filters=document.createElement('div');filters.className='pl-filters';
+  [['all','Toate'],['waiting','Așteptare'],['inprogress','În lucru'],['done','Finalizate']].forEach(function(f){
+    var btn=document.createElement('button');btn.className='pl-filter'+(PL.taskFilter===f[0]?' active':'');btn.textContent=f[1];
+    btn.onclick=function(){PL.taskFilter=f[0];plRender();};
+    filters.appendChild(btn);
+  });
+  root.appendChild(filters);
+  // Tasks
+  var filtered=allTasks.filter(function(t){
+    if(PL.taskFilter!=='all'&&t.status!==PL.taskFilter) return false;
+    if(PL.taskSearch&&t.name.toLowerCase().indexOf(PL.taskSearch.toLowerCase())<0) return false;
+    return true;
+  });
+  if(!filtered.length){
+    var empty=document.createElement('div');empty.className='pl-empty';
+    empty.innerHTML='<div class="pl-empty-ic">📋</div><p>Niciun task<br><small>Apasă + pentru a adăuga un task</small></p>';
+    root.appendChild(empty);return;
+  }
+  filtered.forEach(function(task){
+    var row=document.createElement('div');row.className='pl-task-row';
+    var isDone=task.status==='done';
+    var statusLabels={waiting:'Așteptare',inprogress:'În lucru',done:'Finalizat'};
+    var statusClass={waiting:'waiting',inprogress:'inprogress',done:'done-s'};
+    row.innerHTML='<div class="pl-task-check'+(isDone?' done':'')+'">  '+(isDone?'&#10003;':'')+'</div>'+
+      '<div class="pl-task-info"><div class="pl-task-name'+(isDone?' done':'')+'">'+task.name+'</div>'+
+      (task.note?'<div class="pl-task-meta">'+task.note+'</div>':'')+
+      '<div class="pl-task-meta"><span class="pl-task-status '+statusClass[task.status||'waiting']+'">'+statusLabels[task.status||'waiting']+'</span></div></div>';
+    row.querySelector('.pl-task-check').onclick=function(e){
+      e.stopPropagation();
+      task.status=isDone?'waiting':'done';
+      plSave();plRender();
+    };
+    row.onclick=function(){plOpenEditTask(car,task);};
+    root.appendChild(row);
+  });
+}
+
+function plRenderCategoriesTab(root,car,cats){
+  var grid=document.createElement('div');grid.className='pl-cat-grid';
+  cats.forEach(function(cat){
+    var tasks=plTasksForCat(cat);
+    var done=tasks.filter(function(t){return t.status==='done';}).length;
+    var pct=tasks.length?Math.round(done/tasks.length*100):0;
+    var card=document.createElement('div');card.className='pl-cat-card';
+    card.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+      '<div class="pl-cat-ic">'+cat.icon+'</div>'+
+      '<span style="font-size:16px;font-weight:700;color:var(--pl-blue)">'+tasks.length+'</span></div>'+
+      '<div class="pl-cat-n">'+cat.name+'</div>'+
+      '<div class="pl-cat-sub">'+(cat.subs||[]).length+' subcat.</div>'+
+      '<div class="pl-cat-prog"><div class="pl-cat-prog-bar" style="width:'+pct+'%"></div></div>'+
+      '<div style="font-size:10px;color:var(--pl-text2);margin-top:4px">'+done+'/'+tasks.length+'</div>';
+    card.onclick=function(){PL.catId=cat.id;PL.view='category';plRender();};
+    grid.appendChild(card);
+  });
+  root.appendChild(grid);
+}
+
+/* ── CATEGORY DETAIL ── */
+function plRenderCategory(root){
+  var car=plGetCar();if(!car)return;
+  var cat=plGetCat(car);if(!cat)return;
+  var tasks=plTasksForCat(cat);
+  var done=tasks.filter(function(t){return t.status==='done';}).length;
+  var waiting=tasks.filter(function(t){return t.status==='waiting'||!t.status;}).length;
+
+  // Topbar
+  var top=document.createElement('div');top.className='pl-topbar';
+  var back=document.createElement('button');back.className='pl-back';back.innerHTML='&#8249;';back.onclick=function(){PL.view='car';PL.taskTab='categories';plRender();};
+  var title=document.createElement('span');title.style.cssText='font-size:18px;font-weight:700;color:var(--pl-text);';title.textContent=cat.name;
+  var editBtn=document.createElement('button');editBtn.innerHTML='&#9998;';editBtn.style.cssText='background:none;border:none;font-size:20px;cursor:pointer;color:var(--pl-blue);';
+  editBtn.onclick=function(){plOpenEditCategory(car,cat);};
+  top.appendChild(back);top.appendChild(title);top.appendChild(editBtn);
+  root.appendChild(top);
+
+  // Stats
+  var stats=document.createElement('div');stats.className='pl-stats';stats.style.cssText='background:var(--pl-card);border-bottom:0.5px solid var(--pl-border);';
+  stats.innerHTML='<div class="pl-stat"><div class="pl-stat-n">'+tasks.length+'</div><div class="pl-stat-l">Total</div></div>'+
+    '<div class="pl-stat"><div class="pl-stat-n green">'+done+'</div><div class="pl-stat-l">Finalizate</div></div>'+
+    '<div class="pl-stat"><div class="pl-stat-n" style="color:var(--pl-orange)">'+waiting+'</div><div class="pl-stat-l">În așteptare</div></div>';
+  root.appendChild(stats);
+
+  // Subcategories
+  var subHd=document.createElement('div');subHd.className='pl-subcat-hd';subHd.style.padding='16px 16px 8px';
+  subHd.innerHTML='<span>SUBCATEGORII</span>';
+  var addSubBtn=document.createElement('button');addSubBtn.className='pl-subcat-add';addSubBtn.innerHTML='+ Adaugă';
+  addSubBtn.onclick=function(){plOpenAddSubcat(car,cat);};
+  subHd.appendChild(addSubBtn);
+  root.appendChild(subHd);
+
+  var subList=document.createElement('div');subList.className='pl-subcat-list';
+  // "Toate" row
+  var allRow=document.createElement('div');allRow.className='pl-sub-row active-sel';
+  allRow.innerHTML='<div class="pl-sub-ic">&#8862;</div><span class="pl-sub-name">Toate</span><span class="pl-sub-count">'+tasks.length+'</span><span style="color:var(--pl-blue);font-size:14px;margin-left:4px">&#8250;</span>';
+  allRow.onclick=function(){PL.subId='__all__';plOpenSubTasks(car,cat,null);};
+  subList.appendChild(allRow);
+
+  (cat.subs||[]).forEach(function(sub){
+    var row=document.createElement('div');row.className='pl-sub-row';
+    var tc=(sub.tasks||[]).length;
+    row.innerHTML='<div class="pl-sub-ic" style="background:var(--pl-blue2);font-size:16px;">'+sub.icon+'</div>'+
+      '<span class="pl-sub-name" style="color:var(--pl-text)">'+sub.name+'</span>'+
+      '<span class="pl-sub-count">'+tc+'</span>';
+    var plus=document.createElement('button');plus.className='pl-sub-plus';plus.innerHTML='+';
+    plus.onclick=function(e){e.stopPropagation();plOpenAddTask(car,cat,sub);};
+    row.appendChild(plus);
+    row.onclick=function(){PL.subId=sub.id;plOpenSubTasks(car,cat,sub);};
+    subList.appendChild(row);
+  });
+  root.appendChild(subList);
+}
+
+/* ── SUBTASK LIST (overlay) ── */
+function plOpenSubTasks(car,cat,sub){
+  var tasks=sub?plTasksForSub(sub):plTasksForCat(cat);
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.maxHeight='85%';
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent=sub?sub.name:'Toate taskurile';
+  var add=document.createElement('button');add.className='pl-sheet-save';add.textContent='+ Task';
+  add.onclick=function(){ov.remove();plOpenAddTask(car,cat,sub);};
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(add);sheet.appendChild(hd);
+
+  if(!tasks.length){
+    var empty=document.createElement('div');empty.className='pl-empty';
+    empty.innerHTML='<div class="pl-empty-ic">📋</div><p>Niciun task</p>';
+    sheet.appendChild(empty);
+  } else {
+    tasks.forEach(function(task){
+      var row=document.createElement('div');row.className='pl-task-row';
+      row.style.margin='8px 16px';
+      var isDone=task.status==='done';
+      row.innerHTML='<div class="pl-task-check'+(isDone?' done':'')+'">'+(isDone?'&#10003;':'')+'</div>'+
+        '<div class="pl-task-info"><div class="pl-task-name'+(isDone?' done':'')+'">'+task.name+'</div>'+
+        (task.note?'<div class="pl-task-meta">'+task.note+'</div>':'')+
+        '</div>';
+      row.querySelector('.pl-task-check').onclick=function(){task.status=isDone?'waiting':'done';plSave();ov.remove();plRender();};
+      sheet.appendChild(row);
+    });
+  }
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+/* ── ADD/EDIT TASK ── */
+function plOpenAddTask(car,cat,sub){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  var selStatus='waiting';
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Task nou';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+
+  // Cat/Sub selector if none passed
+  var catSel=cat,subSel=sub;
+  var form=document.createElement('div');form.className='pl-form';
+
+  // Category selector
+  if(!cat){
+    var fcat=document.createElement('div');fcat.className='pl-field';
+    fcat.innerHTML='<label>Categorie</label>';
+    var sel=document.createElement('select');sel.className='pl-inp';sel.id='pl-tcat';
+    (car.categories||[]).forEach(function(c){
+      var opt=document.createElement('option');opt.value=c.id;opt.textContent=c.name;sel.appendChild(opt);
+    });
+    sel.onchange=function(){
+      catSel=car.categories.find(function(c){return c.id===sel.value;});
+      var subsel=document.getElementById('pl-tsub');
+      if(subsel){subsel.innerHTML='';(catSel.subs||[]).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.name;subsel.appendChild(o);});}
+    };
+    fcat.appendChild(sel);form.appendChild(fcat);
+    catSel=car.categories[0];
+
+    var fsub=document.createElement('div');fsub.className='pl-field';
+    fsub.innerHTML='<label>Subcategorie</label>';
+    var ssel=document.createElement('select');ssel.className='pl-inp';ssel.id='pl-tsub';
+    (catSel&&catSel.subs||[]).forEach(function(s){var o=document.createElement('option');o.value=s.id;o.textContent=s.name;ssel.appendChild(o);});
+    ssel.onchange=function(){subSel=(catSel.subs||[]).find(function(s){return s.id===ssel.value;});};
+    fsub.appendChild(ssel);form.appendChild(fsub);
+    subSel=catSel&&catSel.subs&&catSel.subs[0];
+  }
+
+  form.innerHTML+='<div class="pl-field"><label>Denumire *</label><input class="pl-inp" id="pl-tn" placeholder="Ex: Schimb ulei..."></div>'+
+    '<div class="pl-field"><label>Notă</label><input class="pl-inp" id="pl-tnote" placeholder="Detalii..."></div>'+
+    '<div class="pl-field"><label>Status</label><div class="pl-task-status-sel" id="pl-tstat">'+
+    '<button class="pl-status-btn sel" data-s="waiting">Așteptare</button>'+
+    '<button class="pl-status-btn" data-s="inprogress">În lucru</button>'+
+    '<button class="pl-status-btn" data-s="done">Finalizat</button>'+
+    '</div></div>';
+  sheet.appendChild(form);
+
+  setTimeout(function(){
+    document.querySelectorAll('#pl-tstat .pl-status-btn').forEach(function(b){
+      b.onclick=function(){
+        selStatus=b.dataset.s;
+        document.querySelectorAll('#pl-tstat .pl-status-btn').forEach(function(x){x.classList.remove('sel');});
+        b.classList.add('sel');
+      };
+    });
+  },10);
+
+  save.onclick=function(){
+    var name=(document.getElementById('pl-tn').value||'').trim();
+    if(!name){alert('Introdu denumirea taskului');return;}
+    var tcat=catSel||car.categories[0];
+    var csub=document.getElementById('pl-tsub');
+    if(csub) subSel=(tcat.subs||[]).find(function(s){return s.id===csub.value;})||tcat.subs[0];
+    var targetSub=subSel||(tcat&&tcat.subs&&tcat.subs[0]);
+    if(!targetSub){alert('Selectează o subcategorie');return;}
+    if(!targetSub.tasks) targetSub.tasks=[];
+    targetSub.tasks.push({id:plId(),name:name,note:document.getElementById('pl-tnote').value||'',status:selStatus,created:Date.now()});
+    plSave();ov.remove();plRender();
+  };
+
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+function plOpenEditTask(car,task){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  var selStatus=task.status||'waiting';
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Editează task';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>Denumire *</label><input class="pl-inp" id="pl-etn" value="'+task.name+'"></div>'+
+    '<div class="pl-field"><label>Notă</label><input class="pl-inp" id="pl-etnote" value="'+(task.note||'')+'"></div>'+
+    '<div class="pl-field"><label>Status</label><div class="pl-task-status-sel" id="pl-etstat">'+
+    '<button class="pl-status-btn'+(selStatus==='waiting'?' sel':'')+'" data-s="waiting">Așteptare</button>'+
+    '<button class="pl-status-btn'+(selStatus==='inprogress'?' sel':'')+'" data-s="inprogress">În lucru</button>'+
+    '<button class="pl-status-btn'+(selStatus==='done'?' sel':'')+'" data-s="done">Finalizat</button>'+
+    '</div></div>';
+  sheet.appendChild(form);
+
+  // Delete button
+  var delBtn=document.createElement('button');
+  delBtn.style.cssText='margin:0 20px;padding:12px;background:#fff0f0;color:var(--pl-red);border:none;border-radius:10px;width:calc(100% - 40px);font-size:14px;cursor:pointer;font-family:inherit;';
+  delBtn.innerHTML='🗑️ Șterge task';
+  delBtn.onclick=function(){
+    // Remove task from wherever it is
+    (car.categories||[]).forEach(function(cat){
+      (cat.subs||[]).forEach(function(s){
+        s.tasks=(s.tasks||[]).filter(function(t){return t.id!==task.id;});
+      });
+    });
+    plSave();ov.remove();plRender();
+  };
+  sheet.appendChild(delBtn);
+
+  setTimeout(function(){
+    document.querySelectorAll('#pl-etstat .pl-status-btn').forEach(function(b){
+      b.onclick=function(){
+        selStatus=b.dataset.s;
+        document.querySelectorAll('#pl-etstat .pl-status-btn').forEach(function(x){x.classList.remove('sel');});
+        b.classList.add('sel');
+      };
+    });
+  },10);
+
+  save.onclick=function(){
+    var name=(document.getElementById('pl-etn').value||'').trim();
+    if(!name)return;
+    task.name=name;task.note=document.getElementById('pl-etnote').value||'';task.status=selStatus;
+    plSave();ov.remove();plRender();
+  };
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+/* ── ADD/EDIT CATEGORY ── */
+function plOpenAddCategory(car){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  var selIcon=PL_ICONS[0];
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Categorie nouă';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>Nume *</label><input class="pl-inp" id="pl-catn" placeholder="Ex: Electrica, Suspensie..."></div>'+
+    '<div class="pl-field"><label>Iconiță</label></div>';
+  sheet.appendChild(form);
+
+  // Preview
+  var prev=document.createElement('div');prev.className='pl-preview-row';
+  prev.innerHTML='<div class="pl-preview-ic" id="pl-prev-ic">'+selIcon+'</div><span class="pl-preview-name" id="pl-prev-name">Previzualizare</span>';
+  sheet.appendChild(prev);
+
+  // Icon grid
+  var grid=document.createElement('div');grid.className='pl-icon-grid';
+  PL_ICONS.forEach(function(ic,idx){
+    var btn=document.createElement('button');btn.className='pl-ic-btn'+(idx===0?' sel':'');btn.textContent=ic;
+    btn.onclick=function(){
+      selIcon=ic;
+      document.querySelectorAll('.pl-ic-btn').forEach(function(b){b.classList.remove('sel');});
+      btn.classList.add('sel');
+      var pi=document.getElementById('pl-prev-ic');if(pi)pi.textContent=ic;
+    };
+    grid.appendChild(btn);
+  });
+  sheet.appendChild(grid);
+
+  save.onclick=function(){
+    var name=(document.getElementById('pl-catn').value||'').trim();
+    if(!name){alert('Introdu numele categoriei');return;}
+    var newCat={id:plId(),name:name,icon:selIcon,subs:[]};
+    if(!car.categories) car.categories=[];
+    car.categories.push(newCat);
+    plSave();ov.remove();plRender();
+  };
+
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+function plOpenEditCategory(car,cat){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  var selIcon=cat.icon||PL_ICONS[0];
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Editează categoria';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>Nume *</label><input class="pl-inp" id="pl-ecatn" value="'+cat.name+'"></div>'+
+    '<div class="pl-field"><label>Iconiță</label></div>';
+  sheet.appendChild(form);
+
+  var prev=document.createElement('div');prev.className='pl-preview-row';
+  prev.innerHTML='<div class="pl-preview-ic" id="pl-prev-ic">'+selIcon+'</div><span class="pl-preview-name">'+cat.name+'</span>';
+  sheet.appendChild(prev);
+
+  var grid=document.createElement('div');grid.className='pl-icon-grid';
+  PL_ICONS.forEach(function(ic){
+    var btn=document.createElement('button');btn.className='pl-ic-btn'+(ic===selIcon?' sel':'');btn.textContent=ic;
+    btn.onclick=function(){
+      selIcon=ic;
+      document.querySelectorAll('.pl-ic-btn').forEach(function(b){b.classList.remove('sel');});
+      btn.classList.add('sel');
+      var pi=document.getElementById('pl-prev-ic');if(pi)pi.textContent=ic;
+    };
+    grid.appendChild(btn);
+  });
+  sheet.appendChild(grid);
+
+  // Delete category
+  var delBtn=document.createElement('button');
+  delBtn.style.cssText='margin:8px 20px 0;padding:12px;background:#fff0f0;color:var(--pl-red);border:none;border-radius:10px;width:calc(100% - 40px);font-size:14px;cursor:pointer;font-family:inherit;';
+  delBtn.innerHTML='🗑️ Șterge categoria';
+  delBtn.onclick=function(){
+    car.categories=car.categories.filter(function(c){return c.id!==cat.id;});
+    plSave();ov.remove();PL.view='car';PL.taskTab='categories';plRender();
+  };
+  sheet.appendChild(delBtn);
+
+  save.onclick=function(){
+    var name=(document.getElementById('pl-ecatn').value||'').trim();
+    if(!name)return;
+    cat.name=name;cat.icon=selIcon;
+    plSave();ov.remove();plRender();
+  };
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+/* ── ADD SUBCATEGORY ── */
+function plOpenAddSubcat(car,cat){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';
+  var selIcon=PL_ICONS[0];
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Subcategorie nouă';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>Nume *</label><input class="pl-inp" id="pl-subn" placeholder="Ex: Frâne față..."></div><div class="pl-field"><label>Iconiță</label></div>';
+  sheet.appendChild(form);
+
+  var prev=document.createElement('div');prev.className='pl-preview-row';
+  prev.innerHTML='<div class="pl-preview-ic" id="pl-prev-ic">'+selIcon+'</div><span class="pl-preview-name">Previzualizare</span>';
+  sheet.appendChild(prev);
+
+  var grid=document.createElement('div');grid.className='pl-icon-grid';
+  PL_ICONS.forEach(function(ic,i){
+    var btn=document.createElement('button');btn.className='pl-ic-btn'+(i===0?' sel':'');btn.textContent=ic;
+    btn.onclick=function(){
+      selIcon=ic;
+      document.querySelectorAll('.pl-ic-btn').forEach(function(b){b.classList.remove('sel');});
+      btn.classList.add('sel');
+      var pi=document.getElementById('pl-prev-ic');if(pi)pi.textContent=ic;
+    };
+    grid.appendChild(btn);
+  });
+  sheet.appendChild(grid);
+
+  save.onclick=function(){
+    var name=(document.getElementById('pl-subn').value||'').trim();
+    if(!name)return;
+    if(!cat.subs) cat.subs=[];
+    cat.subs.push({id:plId(),name:name,icon:selIcon,tasks:[]});
+    plSave();ov.remove();plRender();
+  };
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  root.appendChild(ov);
+}
+
+/* ── INIT ── */
+function plInit(){
+  plLoad();plRender();
+}
+
+plInit();
 load();render();
 </script>
+
+<div class="tabbar">
+  <button class="tab active" id="tab-docauto" onclick="switchTab('docauto')">
+    <div class="tab-ic">&#128663;</div>
+    <div class="tab-lbl">DocAuto</div>
+    <div class="tab-indicator"></div>
+  </button>
+  <button class="tab" id="tab-planner" onclick="switchTab('planner')">
+    <div class="tab-ic">&#128197;</div>
+    <div class="tab-lbl">Car Planner</div>
+    <div class="tab-indicator"></div>
+  </button>
+</div>
 </body>
 </html>
