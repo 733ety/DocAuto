@@ -132,8 +132,8 @@ body.light .tabbar{background:rgba(245,245,240,0.96);}
 .pl-car-sub{font-size:11px;color:var(--text2);margin-top:3px;}
 .pl-chev{color:var(--text3);font-size:12px;}
 /* Sheet - same as DocAuto sheet */
-.pl-overlay{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;animation:fi 0.18s ease;}
-.pl-sheet{width:100%;background:var(--bg2);border-radius:20px 20px 0 0;border-top:0.5px solid var(--border2);max-height:92%;overflow-y:auto;animation:su 0.25s cubic-bezier(0.32,0.72,0,1);}
+.pl-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;animation:fi 0.18s ease;}
+.pl-sheet{width:100%;background:var(--bg2);border-radius:20px 20px 0 0;border-top:0.5px solid var(--border2);max-height:88%;min-height:55%;overflow-y:auto;animation:su 0.25s cubic-bezier(0.32,0.72,0,1);-webkit-overflow-scrolling:touch;}
 .pl-sh{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 4px;}
 .pl-sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 16px;}
 .pl-sheet-title{font-size:17px;font-weight:600;color:var(--text);}
@@ -190,7 +190,7 @@ body.light .pl-inp:focus{border-color:rgba(0,0,0,0.4);}
 .pl-cat-prog{height:3px;background:var(--border);border-radius:2px;margin-top:8px;}
 .pl-cat-prog-bar{height:100%;background:var(--pl-blue);border-radius:2px;}
 /* Subcategory list */
-.pl-subcat-list{padding:0 16px;}
+.pl-subcat-list{padding:0 16px 100px;}
 .pl-subcat-hd{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:0.05em;text-transform:uppercase;padding:14px 0 8px;display:flex;align-items:center;justify-content:space-between;}
 .pl-subcat-add{font-size:13px;font-weight:600;color:var(--pl-blue);background:none;border:none;cursor:pointer;font-family:inherit;}
 .pl-sub-row{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;border:0.5px solid var(--border);transition:background 0.1s;}
@@ -244,7 +244,7 @@ body.light .pl-inp:focus{border-color:rgba(0,0,0,0.4);}
 <div class="cars" id="cars"></div>
 </div>
 
-<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;background:var(--bg);"><div id="pl-root" style="width:100%;min-height:100%;"></div>
+<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);"><div id="pl-root" style="width:100%;min-height:100%;"></div>
 </div>
 
 <div id="ov" style="display:none;"></div>
@@ -664,10 +664,12 @@ function delFile(id,fk){
 /* THEME */
 function toggleTheme(){
   var l=document.body.classList.toggle('light');
-  document.getElementById('themeBtn').innerHTML=l?'&#9679;':'&#127769;';
+  var ic=l?'&#9728;':'&#127769;';
+  document.getElementById('themeBtn').innerHTML=ic;
+  var tb2=document.getElementById('plThemeBtn');if(tb2)tb2.innerHTML=ic;
   try{localStorage.setItem('dt',l?'l':'d');}catch(e){}
 }
-(function(){try{if(localStorage.getItem('dt')==='l'){document.body.classList.add('light');document.getElementById('themeBtn').innerHTML='&#9679;';}}catch(e){}})();
+(function(){try{if(localStorage.getItem('dt')==='l'){document.body.classList.add('light');var ic='&#9728;';document.getElementById('themeBtn').innerHTML=ic;}}catch(e){}})();
 
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
 function switchTab(tab){
@@ -767,9 +769,14 @@ function plRenderHome(root){
   var n=PL.data.cars.length;
   var hd=document.createElement('div');hd.className='pl-topbar';
   hd.innerHTML='<div><h1>CAR PLANNER</h1><p>'+n+' '+(n===1?'mașină':'mașini')+'</p></div>';
+  var plTbr=document.createElement('div');plTbr.style.cssText='display:flex;align-items:center;gap:8px;';
+  var plThm=document.createElement('button');plThm.className='tbtn';plThm.id='plThemeBtn';
+  plThm.innerHTML=document.body.classList.contains('light')?'&#9728;':'&#127769;';
+  plThm.onclick=function(){toggleTheme();};
   var fab=document.createElement('button');fab.className='pl-fab';fab.innerHTML='+';
   fab.onclick=function(){plOpenAddCar();};
-  hd.appendChild(fab);root.appendChild(hd);
+  plTbr.appendChild(plThm);plTbr.appendChild(fab);
+  hd.appendChild(plTbr);root.appendChild(hd);
 
   var list=document.createElement('div');list.className='pl-list';
   if(!n){
@@ -798,14 +805,14 @@ function plOpenAddCar(editId){
   var car=editId?PL.data.cars.find(function(c){return c.id===editId;}):null;
   var selColor=car?car.color:PL_COLORS[0];
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
   // Header
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent=editId?'Editează mașina':'Mașină nouă';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
-  save.onclick=function(){plSaveCar(selColor);ov.remove();};
+  save.onclick=function(){plSaveCar(selColor);plClose(ov);};
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);
   sheet.appendChild(hd);
   // Form
@@ -833,7 +840,7 @@ function plOpenAddCar(editId){
     });
   },10);
   ov.appendChild(sheet);
-  ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
 }
 
@@ -861,8 +868,12 @@ function plRenderCar(root){
   // Top
   var top=document.createElement('div');top.className='pl-detail-top pl-topbar';
   var back=document.createElement('button');back.className='pl-back';back.innerHTML='&#8249;';back.onclick=function(){PL.view='home';plRender();};
-  var nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:8px;';
-  nameRow.innerHTML='<div class="pl-car-dot" style="background:'+car.color+'"></div><div class="pl-detail-name">'+car.name+'</div>';
+  var nameRow=document.createElement('div');nameRow.style.cssText='display:flex;align-items:center;gap:8px;flex:1;min-width:0;';
+  nameRow.innerHTML='<div class="pl-car-dot" style="background:'+car.color+'"></div><div class="pl-detail-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+car.name+'</div>';
+  var topRight=document.createElement('div');topRight.style.cssText='display:flex;align-items:center;gap:8px;flex-shrink:0;';
+  var plThm2=document.createElement('button');plThm2.className='tbtn';plThm2.id='plThemeBtn';
+  plThm2.innerHTML=document.body.classList.contains('light')?'&#9728;':'&#127769;';
+  plThm2.onclick=function(){toggleTheme();};
   var del2=document.createElement('button');del2.className='pl-del-btn';del2.innerHTML='🗑️';
   del2.onclick=function(){
     showConfirm('Sterge masina','Stergi '+car.name+' si toate taskurile?',function(){
@@ -870,7 +881,8 @@ function plRenderCar(root){
       plSave();PL.view='home';plRender();
     });
   };
-  top.appendChild(back);top.appendChild(nameRow);top.appendChild(del2);
+  topRight.appendChild(plThm2);topRight.appendChild(del2);
+  top.appendChild(back);top.appendChild(nameRow);top.appendChild(topRight);
   root.appendChild(top);
 
   // Stats
@@ -975,28 +987,31 @@ function plRenderCategory(root){
   // Topbar
   var top=document.createElement('div');top.className='pl-topbar';
   var back=document.createElement('button');back.className='pl-back';back.innerHTML='&#8249;';back.onclick=function(){PL.view='car';PL.taskTab='categories';plRender();};
-  var title=document.createElement('span');title.style.cssText='font-size:18px;font-weight:700;color:var(--pl-text);';title.textContent=cat.name;
+  var title=document.createElement('span');title.style.cssText='font-size:18px;font-weight:700;color:var(--text);';title.textContent=cat.name;
+  var catThm=document.createElement('div');catThm.style.cssText='display:flex;align-items:center;gap:8px;';
+  var plThm3=document.createElement('button');plThm3.className='tbtn';plThm3.id='plThemeBtn';plThm3.innerHTML=document.body.classList.contains('light')?'&#9728;':'&#127769;';plThm3.onclick=function(){toggleTheme();};
   var editBtn=document.createElement('button');editBtn.innerHTML='&#9998;';editBtn.style.cssText='background:none;border:none;font-size:20px;cursor:pointer;color:var(--pl-blue);';
   editBtn.onclick=function(){plOpenEditCategory(car,cat);};
-  top.appendChild(back);top.appendChild(title);top.appendChild(editBtn);
+  catThm.appendChild(plThm3);catThm.appendChild(editBtn);
+  top.appendChild(back);top.appendChild(title);top.appendChild(catThm);
   root.appendChild(top);
 
   // Stats
-  var stats=document.createElement('div');stats.className='pl-stats';stats.style.cssText='background:var(--pl-card);border-bottom:0.5px solid var(--pl-border);';
+  var stats=document.createElement('div');stats.className='pl-stats';
   stats.innerHTML='<div class="pl-stat"><div class="pl-stat-n">'+tasks.length+'</div><div class="pl-stat-l">Total</div></div>'+
     '<div class="pl-stat"><div class="pl-stat-n green">'+done+'</div><div class="pl-stat-l">Finalizate</div></div>'+
-    '<div class="pl-stat"><div class="pl-stat-n" style="color:var(--pl-orange)">'+waiting+'</div><div class="pl-stat-l">În așteptare</div></div>';
+    '<div class="pl-stat"><div class="pl-stat-n orange">'+waiting+'</div><div class="pl-stat-l">In asteptare</div></div>';
   root.appendChild(stats);
 
-  // Subcategories
-  var subHd=document.createElement('div');subHd.className='pl-subcat-hd';subHd.style.padding='16px 16px 8px';
+  // Section header - no button here anymore
+  var subHd=document.createElement('div');subHd.className='pl-subcat-hd';subHd.style.padding='14px 16px 8px';
   subHd.innerHTML='<span>SUBCATEGORII</span>';
-  var addSubBtn=document.createElement('button');addSubBtn.className='pl-subcat-add';addSubBtn.innerHTML='+ Adaugă';
-  addSubBtn.onclick=function(){plOpenAddSubcat(car,cat);};
-  subHd.appendChild(addSubBtn);
   root.appendChild(subHd);
 
+  // Scrollable list container
   var subList=document.createElement('div');subList.className='pl-subcat-list';
+  subList.style.cssText='overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 120px;';
+
   // "Toate" row
   var allRow=document.createElement('div');allRow.className='pl-sub-row active-sel';
   allRow.innerHTML='<div class="pl-sub-ic">&#8862;</div><span class="pl-sub-name">Toate</span><span class="pl-sub-count">'+tasks.length+'</span><span style="color:var(--pl-blue);font-size:14px;margin-left:4px">&#8250;</span>';
@@ -1006,8 +1021,13 @@ function plRenderCategory(root){
   (cat.subs||[]).forEach(function(sub){
     var row=document.createElement('div');row.className='pl-sub-row';
     var tc=(sub.tasks||[]).length;
-    row.innerHTML='<div class="pl-sub-ic" style="background:var(--pl-blue2);font-size:16px;">'+sub.icon+'</div>'+
-      '<span class="pl-sub-name" style="color:var(--pl-text)">'+sub.name+'</span>'+
+    var photos=(sub.photos||[]).length;
+    var links=(sub.links||[]).length;
+    var extras='';
+    if(photos>0) extras+=' <span style="font-size:10px;color:var(--text2)">&#128247;'+photos+'</span>';
+    if(links>0) extras+=' <span style="font-size:10px;color:var(--text2)">&#128279;'+links+'</span>';
+    row.innerHTML='<div class="pl-sub-ic" style="background:var(--bg3);font-size:16px;">'+sub.icon+'</div>'+
+      '<span class="pl-sub-name">'+sub.name+extras+'</span>'+
       '<span class="pl-sub-count">'+tc+'</span>';
     var plus=document.createElement('button');plus.className='pl-sub-plus';plus.innerHTML='+';
     plus.onclick=function(e){e.stopPropagation();plOpenAddTask(car,cat,sub);};
@@ -1015,6 +1035,15 @@ function plRenderCategory(root){
     row.onclick=function(){PL.subId=sub.id;plOpenSubTasks(car,cat,sub);};
     subList.appendChild(row);
   });
+
+  // Add subcategory row at bottom - looks like a subcategory row
+  var addRow=document.createElement('div');addRow.className='pl-sub-row';
+  addRow.style.cssText='border:1.5px dashed var(--border2);background:transparent;';
+  addRow.innerHTML='<div class="pl-sub-ic" style="background:var(--bg3);color:var(--pl-blue);font-size:20px;">+</div>'+
+    '<span class="pl-sub-name" style="color:var(--pl-blue)">Adauga subcategorie</span>';
+  addRow.onclick=function(){plOpenAddSubcat(car,cat);};
+  subList.appendChild(addRow);
+
   root.appendChild(subList);
 }
 
@@ -1023,44 +1052,181 @@ function plOpenSubTasks(car,cat,sub){
   var tasks=sub?plTasksForSub(sub):plTasksForCat(cat);
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
-  sheet.style.maxHeight='85%';
+  sheet.style.paddingBottom='24px';
+  var hdl=document.createElement('div');hdl.className='pl-sh';sheet.appendChild(hdl);
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';
+  xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent=sub?sub.name:'Toate taskurile';
   var add=document.createElement('button');add.className='pl-sheet-save';add.textContent='+ Task';
-  add.onclick=function(){ov.remove();plOpenAddTask(car,cat,sub);};
+  add.onclick=function(){plClose(ov);plOpenAddTask(car,cat,sub);};
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(add);sheet.appendChild(hd);
 
+  // Tasks section
   if(!tasks.length){
     var empty=document.createElement('div');empty.className='pl-empty';
-    empty.innerHTML='<div class="pl-empty-ic">📋</div><p>Niciun task</p>';
+    empty.innerHTML='<div class="pl-empty-ic">&#128203;</div><p>Niciun task</p>';
     sheet.appendChild(empty);
   } else {
     tasks.forEach(function(task){
       var row=document.createElement('div');row.className='pl-task-row';
-      row.style.margin='8px 16px';
+      row.style.margin='0 16px 8px';
       var isDone=task.status==='done';
-      row.innerHTML='<div class="pl-task-check'+(isDone?' done':'')+'">'+(isDone?'&#10003;':'')+'</div>'+
-        '<div class="pl-task-info"><div class="pl-task-name'+(isDone?' done':'')+'">'+task.name+'</div>'+
-        (task.note?'<div class="pl-task-meta">'+task.note+'</div>':'')+
-        '</div>';
-      row.querySelector('.pl-task-check').onclick=function(){task.status=isDone?'waiting':'done';plSave();ov.remove();plRender();};
+      var chk=document.createElement('div');chk.className='pl-task-check'+(isDone?' done':'');
+      chk.innerHTML=isDone?'&#10003;':'';
+      chk.onclick=function(){task.status=isDone?'waiting':'done';plSave();plClose(ov);plRender();};
+      var info=document.createElement('div');info.className='pl-task-info';
+      info.innerHTML='<div class="pl-task-name'+(isDone?' done':'')+'">'+task.name+'</div>'+
+        (task.note?'<div class="pl-task-meta">'+task.note+'</div>':'');
+      row.appendChild(chk);row.appendChild(info);
+      row.onclick=function(){plOpenEditTask(car,task);};
       sheet.appendChild(row);
     });
   }
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+
+  // Photos & Links section (only for specific subcategory, not "Toate")
+  if(sub){
+    var photos=sub.photos||[];
+    var links=sub.links||[];
+
+    var mediaHd=document.createElement('div');
+    mediaHd.style.cssText='font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;padding:16px 16px 8px;border-top:0.5px solid var(--border);margin-top:8px;display:flex;align-items:center;justify-content:space-between;';
+    mediaHd.innerHTML='<span>POZE & LINKURI</span>';
+    var mediaAddBtns=document.createElement('div');mediaAddBtns.style.cssText='display:flex;gap:8px;';
+
+    // Add photo button
+    var addPhotoBtn=document.createElement('button');
+    addPhotoBtn.style.cssText='font-size:12px;font-weight:600;color:var(--pl-blue);background:none;border:none;cursor:pointer;font-family:inherit;';
+    addPhotoBtn.innerHTML='&#128247; Poza';
+    addPhotoBtn.onclick=function(){
+      var fi=document.getElementById('fi');
+      fi.onchange=function(){
+        if(!fi.files||!fi.files[0])return;
+        var reader=new FileReader();
+        var file=fi.files[0];
+        reader.onload=function(e){
+          var img=new Image();
+          img.onload=function(){
+            var mw=800,mh=600,w=img.width,h=img.height;
+            if(w>mw){h=Math.round(h*mw/w);w=mw;}
+            if(h>mh){w=Math.round(w*mh/h);h=mh;}
+            var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+            cv.getContext('2d').drawImage(img,0,0,w,h);
+            if(!sub.photos)sub.photos=[];
+            sub.photos.push({id:plId(),data:cv.toDataURL('image/jpeg',0.82),added:Date.now()});
+            plSave();plClose(ov);
+            PL.subId=sub.id;plOpenSubTasks(car,cat,sub);
+          };
+          img.src=e.target.result;
+        };
+        reader.readAsDataURL(file);
+      };
+      fi.value='';fi.accept='image/*';fi.click();
+    };
+
+    // Add link button
+    var addLinkBtn=document.createElement('button');
+    addLinkBtn.style.cssText='font-size:12px;font-weight:600;color:var(--pl-blue);background:none;border:none;cursor:pointer;font-family:inherit;';
+    addLinkBtn.innerHTML='&#128279; Link';
+    addLinkBtn.onclick=function(){plOpenAddLink(car,cat,sub,ov);};
+
+    mediaAddBtns.appendChild(addPhotoBtn);mediaAddBtns.appendChild(addLinkBtn);
+    mediaHd.appendChild(mediaAddBtns);
+    sheet.appendChild(mediaHd);
+
+    // Photo grid
+    if(photos.length){
+      var photoGrid=document.createElement('div');
+      photoGrid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 16px 12px;';
+      photos.forEach(function(ph){
+        var imgWrap=document.createElement('div');imgWrap.style.cssText='position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;';
+        var img=document.createElement('img');img.src=ph.data;img.style.cssText='width:100%;height:100%;object-fit:cover;cursor:pointer;';
+        img.onclick=function(){plOpenPhoto(ph.data,function(){sub.photos=sub.photos.filter(function(p){return p.id!==ph.id;});plSave();plClose(ov);PL.subId=sub.id;plOpenSubTasks(car,cat,sub);});};
+        imgWrap.appendChild(img);
+        photoGrid.appendChild(imgWrap);
+      });
+      sheet.appendChild(photoGrid);
+    }
+
+    // Links list
+    if(links.length){
+      var linkList=document.createElement('div');linkList.style.cssText='padding:0 16px 12px;display:flex;flex-direction:column;gap:6px;';
+      links.forEach(function(lk){
+        var lrow=document.createElement('div');lrow.style.cssText='background:var(--bg3);border-radius:var(--rsm);padding:10px 12px;display:flex;align-items:center;gap:10px;';
+        lrow.innerHTML='<span style="font-size:16px">&#128279;</span><a href="'+lk.url+'" target="_blank" style="flex:1;font-size:13px;color:var(--pl-blue);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(lk.title||lk.url)+'</a>';
+        var delLk=document.createElement('button');delLk.style.cssText='background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;flex-shrink:0;';
+        delLk.innerHTML='&#10005;';
+        delLk.onclick=function(){sub.links=sub.links.filter(function(l){return l.id!==lk.id;});plSave();plClose(ov);PL.subId=sub.id;plOpenSubTasks(car,cat,sub);};
+        lrow.appendChild(delLk);
+        linkList.appendChild(lrow);
+      });
+      sheet.appendChild(linkList);
+    }
+
+    if(!photos.length&&!links.length){
+      var noMedia=document.createElement('div');noMedia.style.cssText='text-align:center;padding:16px;color:var(--text3);font-size:13px;';
+      noMedia.textContent='Nicio poza sau link adaugat';
+      sheet.appendChild(noMedia);
+    }
+  }
+
+  ov.appendChild(sheet);
+  ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
+  root.appendChild(ov);
+}
+
+function plOpenPhoto(dataSrc, onDelete){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov2';
+  ov.style.cssText='position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;';
+  var img=document.createElement('img');img.src=dataSrc;img.style.cssText='max-width:95%;max-height:75vh;object-fit:contain;border-radius:8px;';
+  var btns=document.createElement('div');btns.style.cssText='display:flex;gap:12px;';
+  var closeBtn=document.createElement('button');closeBtn.style.cssText='padding:10px 24px;background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;';closeBtn.textContent='Inchide';closeBtn.onclick=function(){ov.remove();};
+  var delBtn=document.createElement('button');delBtn.style.cssText='padding:10px 24px;background:rgba(255,59,48,0.8);color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;';delBtn.textContent='Sterge';
+  delBtn.onclick=function(){ov.remove();onDelete();};
+  btns.appendChild(closeBtn);btns.appendChild(delBtn);
+  ov.appendChild(img);ov.appendChild(btns);
+  ov.onclick=function(e){if(e.target===ov)plClose(ov);};
+  root.appendChild(ov);
+}
+
+function plOpenAddLink(car,cat,sub,parentOv){
+  var root=document.getElementById('pl-root');
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov2';ov.style.zIndex='60';
+  var sheet=document.createElement('div');sheet.className='pl-sheet';sheet.style.paddingBottom='80px';
+  var hdl=document.createElement('div');hdl.className='pl-sh';sheet.appendChild(hdl);
+  var hd=document.createElement('div');hd.className='pl-sheet-hd';
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
+  var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Adauga link';
+  var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
+  hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
+  var form=document.createElement('div');form.className='pl-form';
+  form.innerHTML='<div class="pl-field"><label>URL *</label><input class="pl-inp" id="pl-lurl" type="url" placeholder="https://..."></div>'+
+    '<div class="pl-field"><label>Titlu (optional)</label><input class="pl-inp" id="pl-ltitle" placeholder="Ex: Tutorial, Instructiuni..."></div>';
+  sheet.appendChild(form);
+  save.onclick=function(){
+    var url=(document.getElementById('pl-lurl').value||'').trim();
+    if(!url){alert('Introdu URL-ul');return;}
+    if(!url.startsWith('http'))url='https://'+url;
+    if(!sub.links)sub.links=[];
+    sub.links.push({id:plId(),url:url,title:document.getElementById('pl-ltitle').value||'',added:Date.now()});
+    plSave();ov.remove();plClose(parentOv);
+    PL.subId=sub.id;plOpenSubTasks(car,cat,sub);
+  };
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)plClose(ov);};
   root.appendChild(ov);
 }
 
 /* ── ADD/EDIT TASK ── */
 function plOpenAddTask(car,cat,sub){
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
   var selStatus='waiting';
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Task nou';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
@@ -1123,20 +1289,21 @@ function plOpenAddTask(car,cat,sub){
     if(!targetSub){alert('Selectează o subcategorie');return;}
     if(!targetSub.tasks) targetSub.tasks=[];
     targetSub.tasks.push({id:plId(),name:name,note:document.getElementById('pl-tnote').value||'',status:selStatus,created:Date.now()});
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
 
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
 }
 
 function plOpenEditTask(car,task){
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='32px';
   var selStatus=task.status||'waiting';
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Editează task';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
@@ -1162,7 +1329,7 @@ function plOpenEditTask(car,task){
         s.tasks=(s.tasks||[]).filter(function(t){return t.id!==task.id;});
       });
     });
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
   sheet.appendChild(delBtn);
 
@@ -1180,20 +1347,20 @@ function plOpenEditTask(car,task){
     var name=(document.getElementById('pl-etn').value||'').trim();
     if(!name)return;
     task.name=name;task.note=document.getElementById('pl-etnote').value||'';task.status=selStatus;
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
 }
 
 /* ── ADD/EDIT CATEGORY ── */
 function plOpenAddCategory(car){
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
   var selIcon=PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Categorie nouă';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
@@ -1228,20 +1395,20 @@ function plOpenAddCategory(car){
     var newCat={id:plId(),name:name,icon:selIcon,subs:[]};
     if(!car.categories) car.categories=[];
     car.categories.push(newCat);
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
 
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
 }
 
 function plOpenEditCategory(car,cat){
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
   var selIcon=cat.icon||PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Editează categoria';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
@@ -1274,7 +1441,7 @@ function plOpenEditCategory(car,cat){
   delBtn.innerHTML='🗑️ Șterge categoria';
   delBtn.onclick=function(){
     car.categories=car.categories.filter(function(c){return c.id!==cat.id;});
-    plSave();ov.remove();PL.view='car';PL.taskTab='categories';plRender();
+    plSave();plClose(ov);PL.view='car';PL.taskTab='categories';plRender();
   };
   sheet.appendChild(delBtn);
 
@@ -1282,20 +1449,20 @@ function plOpenEditCategory(car,cat){
     var name=(document.getElementById('pl-ecatn').value||'').trim();
     if(!name)return;
     cat.name=name;cat.icon=selIcon;
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
 }
 
 /* ── ADD SUBCATEGORY ── */
 function plOpenAddSubcat(car,cat){
   var root=document.getElementById('pl-root');
-  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';
+  var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
   var selIcon=PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
-  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){ov.remove();};
+  var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
   var title=document.createElement('span');title.className='pl-sheet-title';title.textContent='Subcategorie nouă';
   var save=document.createElement('button');save.className='pl-sheet-save';save.textContent='Salvează';
   hd.appendChild(xb);hd.appendChild(title);hd.appendChild(save);sheet.appendChild(hd);
@@ -1326,10 +1493,21 @@ function plOpenAddSubcat(car,cat){
     if(!name)return;
     if(!cat.subs) cat.subs=[];
     cat.subs.push({id:plId(),name:name,icon:selIcon,tasks:[]});
-    plSave();ov.remove();plRender();
+    plSave();plClose(ov);plRender();
   };
-  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov)ov.remove();};
+  ov.appendChild(sheet);ov.onclick=function(e){if(e.target===ov){plClose(ov);}};
   root.appendChild(ov);
+}
+
+/* ── HELPERS ── */
+function plClose(ov){
+  if(ov&&ov.parentNode) ov.remove();
+  var pp=document.getElementById('page-planner');
+  if(pp) pp.style.overflow='';
+}
+function plLock(){
+  var pp=document.getElementById('page-planner');
+  if(pp) pp.style.overflow='hidden';
 }
 
 /* ── INIT ── */
