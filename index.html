@@ -244,7 +244,7 @@ body.light .pl-inp:focus{border-color:rgba(0,0,0,0.4);}
 <div class="cars" id="cars"></div>
 </div>
 
-<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);"><div id="pl-root" style="width:100%;min-height:100%;"></div>
+<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:var(--bg);"><div id="pl-root" style="width:100%;min-height:100%;"></div>
 </div>
 
 <div id="ov" style="display:none;"></div>
@@ -674,7 +674,15 @@ function toggleTheme(){
 if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
 function switchTab(tab){
   document.getElementById('page-docauto').style.display = tab==='docauto'?'block':'none';
-  document.getElementById('page-planner').style.display = tab==='planner'?'flex':'none';
+  var pp=document.getElementById('page-planner');
+  if(tab==='planner'){
+    pp.style.overflowY='auto';
+    pp.style.overflowX='hidden';
+    pp.style.webkitOverflowScrolling='touch';
+    pp.style.display='block';
+  } else {
+    pp.style.display='none';
+  }
   document.getElementById('tab-docauto').classList.toggle('active', tab==='docauto');
   document.getElementById('tab-planner').classList.toggle('active', tab==='planner');
 }
@@ -807,6 +815,8 @@ function plOpenAddCar(editId){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='70%';
   // Header
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1010,7 +1020,7 @@ function plRenderCategory(root){
 
   // Scrollable list container
   var subList=document.createElement('div');subList.className='pl-subcat-list';
-  subList.style.cssText='overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 120px;';
+  subList.style.cssText='padding:0 16px 120px;';
 
   // "Toate" row
   var allRow=document.createElement('div');allRow.className='pl-sub-row active-sel';
@@ -1224,6 +1234,8 @@ function plOpenAddTask(car,cat,sub){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='85%';
   var selStatus='waiting';
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1300,7 +1312,8 @@ function plOpenEditTask(car,task){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
-  sheet.style.paddingBottom='32px';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='70%';
   var selStatus=task.status||'waiting';
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1358,6 +1371,8 @@ function plOpenAddCategory(car){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='75%';
   var selIcon=PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1406,6 +1421,8 @@ function plOpenEditCategory(car,cat){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='75%';
   var selIcon=cat.icon||PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1460,6 +1477,8 @@ function plOpenAddSubcat(car,cat){
   var root=document.getElementById('pl-root');
   var ov=document.createElement('div');ov.className='pl-overlay';ov.id='pl-ov';plLock();
   var sheet=document.createElement('div');sheet.className='pl-sheet';
+  sheet.style.paddingBottom='80px';
+  sheet.style.minHeight='75%';
   var selIcon=PL_ICONS[0];
   var hd=document.createElement('div');hd.className='pl-sheet-hd';
   var xb=document.createElement('button');xb.className='pl-sheet-x';xb.innerHTML='&#10005;';xb.onclick=function(){plClose(ov);};
@@ -1503,11 +1522,18 @@ function plOpenAddSubcat(car,cat){
 function plClose(ov){
   if(ov&&ov.parentNode) ov.remove();
   var pp=document.getElementById('page-planner');
-  if(pp) pp.style.overflow='';
+  if(pp){
+    pp.style.overflowY='auto';
+    pp.style.overflowX='hidden';
+    pp.style.webkitOverflowScrolling='touch';
+    setTimeout(function(){
+      if(pp){var st=pp.scrollTop;pp.scrollTop=st+1;pp.scrollTop=st;}
+    },30);
+  }
 }
 function plLock(){
   var pp=document.getElementById('page-planner');
-  if(pp) pp.style.overflow='hidden';
+  if(pp){ pp.style.overflowY='hidden'; }
 }
 
 /* ── INIT ── */
