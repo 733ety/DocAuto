@@ -118,12 +118,12 @@ body.light .tabbar{background:rgba(245,245,240,0.96);}
 /* ── CAR PLANNER ── */
 /* Uses DocAuto's existing CSS vars: --bg, --bg2, --bg3, --border, --border2, --text, --text2, --text3, --green, --amber, --red, --radius, --rsm */
 :root{--pl-blue:#3b7bbf;--pl-blue2:rgba(59,123,191,0.1);--pl-green2:#4ade80;--pl-orange:#fb923c;}
-.pl-topbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);}
+.pl-topbar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;backdrop-filter:blur(20px);width:100%;}
 .pl-topbar h1{font-size:20px;font-weight:600;letter-spacing:-0.3px;color:var(--text);}
 .pl-topbar p{font-size:11px;color:var(--text2);margin-top:1px;}
 .pl-fab{width:40px;height:40px;border-radius:50%;background:var(--pl-blue);color:#fff;border:none;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.15s;}
 .pl-fab:active{transform:scale(0.92);}
-.pl-list{padding:4px 16px 16px;}
+.pl-list{padding:4px 16px 16px;width:100%;}
 .pl-car-row{background:var(--bg2);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;border:0.5px solid var(--border);transition:background 0.1s;}
 .pl-car-row:hover{background:var(--bg3);}
 .pl-car-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
@@ -244,9 +244,8 @@ body.light .pl-inp:focus{border-color:rgba(0,0,0,0.4);}
 <div class="cars" id="cars"></div>
 </div>
 
-<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;background:var(--pl-bg);"><div style="max-width:480px;margin:0 auto;min-height:100%;position:relative;">
-<div id="pl-root"></div>
-</div></div>
+<div id="page-planner" style="position:fixed;top:0;left:0;right:0;bottom:60px;display:none;overflow-y:auto;background:var(--bg);"><div id="pl-root" style="width:100%;min-height:100%;"></div>
+</div>
 
 <div id="ov" style="display:none;"></div>
 <input type="file" id="fi" accept="image/*,application/pdf" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;" onchange="onFile(this)">
@@ -894,7 +893,7 @@ function plRenderCar(root){
 
   // FAB
   var fab=document.createElement('button');
-  fab.style.cssText='position:fixed;bottom:72px;right:calc(max(16px, 50% - 224px));width:52px;height:52px;border-radius:50%;background:var(--pl-blue);color:#fff;border:none;font-size:26px;cursor:pointer;z-index:20;box-shadow:0 4px 12px rgba(0,122,255,0.4);display:flex;align-items:center;justify-content:center;';
+  fab.style.cssText='position:fixed;bottom:72px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--pl-blue);color:#fff;border:none;font-size:26px;cursor:pointer;z-index:20;box-shadow:0 4px 12px rgba(0,122,255,0.4);display:flex;align-items:center;justify-content:center;';
   fab.innerHTML='+';
   if(PL.taskTab==='tasks') fab.onclick=function(){plOpenAddTask(car,null,null);};
   else fab.onclick=function(){plOpenAddCategory(car);};
